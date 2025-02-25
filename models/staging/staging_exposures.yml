@@ -1,0 +1,16 @@
+version: 2
+
+exposures:
+  - name: rpt_sales_by_office
+    type: dashboard
+    maturity: high
+    url: https://www.google.com
+    description: "sales by office for all customers"
+
+    depends_on:
+      - ref('f_orders')
+      - ref('dim_employees') 
+    
+    owner:
+      name: Aghila
+      email: aghila@gmail.com

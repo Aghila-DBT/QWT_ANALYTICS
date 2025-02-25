@@ -23,6 +23,10 @@ target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
+vars:
+  v_city: "Stockholm"
+  "dbt_date:time_zone": "America/Los_Angeles"
+  dbt_dq_tool_schema: "{{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}"
 
 
 # Configuring models
@@ -35,8 +39,18 @@ clean-targets:         # directories to be removed by `dbt clean`
 # continue to be built as views. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 
+on-run-start: "alter session set timezone = 'Asia/Kolkata';"
+# on-run-end: "grant usage on database qwt_analytics_dev to role public; grant usage on schema auditing_dev to role public; grant select on table qwt_analytics_dev.auditing_dev.audit_qwt_models to role public;"
+on-run-end:
+  - '{{ dq_tools.store_test_results(results) }}'
 models:
-  my_new_project:
-    # Applies to all files under models/example/
-    example:
-      +materialized: table
+  
+  pre-hook:
+    - "insert into {{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}.{{env_var('DBT_AUDITSCHEMA', 'AUDITING_DEV')}}.audit_qwt_models(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp, null, null);"
+  post-hook:
+    - "update {{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}.{{env_var('DBT_AUDITSCHEMA', 'AUDITING_DEV')}}.audit_qwt_models set endtime = current_timestamp , duration = datediff('second', starttime, current_timestamp) where modelname = '{{this}}'; "
+ 
+  dq_tools:
+    +schema: "{{env_var('DBT_QWTDB', 'QWT_ANALYTICS_DEV')}}"
+  
+  

@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Customer Master data"
+    columns:
+      - name: customerid
+        description: "unique identifier for customer with customer id"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    description: "Product master data" 
+    columns:
+      - name: productid
+        description: "unique identifier for each project with projectID "
+        tests:
+          - unique
+          - not_null        
+
+  - name: stg_employees
+    columns:    
+      - name: empid
+        tests:
+          - unique
+          - not_null   
+             
+  
+  - name: stg_orders
+    columns:    
+      - name: orderid
+        tests:
+          - unique
+          - not_null
+  - name: stg_shipments
+    columns:    
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['shipped','returned','ordered','replaced']
