@@ -15,6 +15,6 @@ sources:
       - name: RAW_OFFICES
       - name: RAW_SHIPMENTS
       - name: RAW_SUPPLIERS
-      
+      - name: RAW_VAULT_OFFICES      
       
       
