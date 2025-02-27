@@ -26,7 +26,8 @@ with recursive managers
       offices (officeid, officecity, officecountry)
       as
       (
-      select officeid, officecity, officecountry from {{ref('stg_offices')}}
+      select ho.officeid, so.officecity, so.officecountry from {{ref('stg_satellite_offices')}} as so 
+      inner join {{ref('stg_hub_Offices')}} as ho on so.officehashkey = ho.officehashkey
       )
  
   -- This is the "main select".
